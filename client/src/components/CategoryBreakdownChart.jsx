@@ -10,7 +10,10 @@ import {
 const COLORS = ['#3B82F6', '#2563EB', '#1D4ED8', '#60A5FA', '#93C5FD'];
 
 const CategoryBreakdownChart = ({ transactions }) => {
-  const categoryData = transactions.reduce((acc, tx) => {
+  
+  const validTransactions = Array.isArray(transactions) ? transactions : [];
+
+  const categoryData = validTransactions.reduce((acc, tx) => {
     const category = tx.category || 'Uncategorized';
     acc[category] = (acc[category] || 0) + tx.amount;
     return acc;

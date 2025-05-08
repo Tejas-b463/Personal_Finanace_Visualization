@@ -6,6 +6,8 @@ import { UserPen, OctagonX } from 'lucide-react';
 const TransactionList = ({ transactions, onTransactionUpdated, onTransactionDeleted }) => {
   const [editingTransaction, setEditingTransaction] = useState(null);
 
+  const validTransactions = Array.isArray(transactions) ? transactions : [];
+
   const handleEdit = (transaction) => {
     setEditingTransaction(transaction);
   };
@@ -15,7 +17,7 @@ const TransactionList = ({ transactions, onTransactionUpdated, onTransactionDele
       await axios.delete(`http://localhost:5001/api/transactions/${id}`);
       onTransactionDeleted(id);
 
-      const updatedTransactions = transactions.filter(tx => tx._id !== id);
+      const updatedTransactions = validTransactions.filter(tx => tx._id !== id);
       localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
 
       toast.success('Transaction deleted successfully');
@@ -112,7 +114,7 @@ const TransactionList = ({ transactions, onTransactionUpdated, onTransactionDele
             </tr>
           </thead>
           <tbody>
-            {transactions.map((transaction) => (
+            {validTransactions.map((transaction) => (
               <tr key={transaction._id} className="bg-gray-50 hover:bg-gray-100 rounded">
                 <td className="p-3">{new Date(transaction.date).toLocaleDateString()}</td>
                 <td className="p-3">{transaction.description}</td>

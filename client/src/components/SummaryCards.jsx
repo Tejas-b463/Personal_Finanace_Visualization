@@ -1,13 +1,15 @@
 import React from 'react';
 
 const SummaryCards = ({ transactions }) => {
-  // Sort transactions by date 
-  const recentTransactions = transactions
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+  
+  const validTransactions = Array.isArray(transactions) ? transactions : [];
+
+ 
+  const recentTransactions = validTransactions.sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 3);
 
   // Calculate total for all transactions
-  const total = transactions.reduce((sum, tx) => sum + parseFloat(tx.amount), 0);
+  const total = validTransactions.reduce((sum, tx) => sum + parseFloat(tx.amount), 0);
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded-md shadow-xs">
