@@ -15,13 +15,12 @@ const App = () => {
   useEffect(() => {
    const fetchTransactions = async () => {
   try {
-    // For debugging purposes
-    console.log("Fetching from hardcoded URL");
-    const res = await axios.get("http://localhost:5001/api/transactions");
-    console.log("Response:", res.data);
+    // Use environment variable that will be set in Vercel
+    const apiUrl = import.meta.env.VITE_API_URL || "https://personal-finanace-visualization.onrender.com/api";
+    const res = await axios.get(`${apiUrl}/transactions`);
     setTransactions(res.data);
   } catch (error) {
-    console.error('Error fetching transactions:', error.response ? error.response.data : error.message);
+    console.error('Error fetching transactions:', error);
   } finally {
     setLoading(false);
   }
