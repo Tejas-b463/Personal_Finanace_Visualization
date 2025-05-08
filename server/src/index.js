@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -24,25 +23,28 @@ app.use(express.json());
 app.use('/api/transactions', transactionRoutes);
 
 // MongoDB connection
-connectDB();
+connectDB().catch((error) => {
+    console.error("MongoDB connection error:", error);
+});
 
 // Serve static files in production
 if (process.env.NODE_ENV === "production") {
+    // Ensure static assets are served correctly
     app.use(express.static(path.join(__dirname, "../client/dist")));
 
-    // Changed from "*" to "/*" for better compatibility
+    // Send index.html for any unknown routes in production
     app.get("/*", (req, res) => {
         res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"));
     });
 }
 
-// Error handling middleware
+// Error handling middleware (general errors)
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({ error: 'Server error', details: err.message });
 });
 
-// Handle 404s
+// 404 handler for unknown routes
 app.use((req, res) => {
     res.status(404).json({ error: 'Route not found' });
 });
