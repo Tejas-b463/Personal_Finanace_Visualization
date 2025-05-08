@@ -1,6 +1,6 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import express from './node_modules/express/index.js';
+import cors from './node_modules/cors/index.js';
+import dotenv from './node_modules/dotenv/index.js'
 import { fileURLToPath } from 'url';
 import path from 'path';
 import transactionRoutes from './routes/transactionRoutes.js';
