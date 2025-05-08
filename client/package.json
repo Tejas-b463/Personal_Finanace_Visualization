@@ -19,7 +19,6 @@
         "build": "^0.1.4",
         "lucide-react": "^0.507.0",
         "npm": "^11.3.0",
-        "personal_finance": "file:..",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-hot-toast": "^2.5.2",
