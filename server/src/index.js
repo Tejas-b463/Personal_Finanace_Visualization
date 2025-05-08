@@ -8,7 +8,7 @@ import connectDB from './config/db.js';
 
 dotenv.config();
 
-// Set up proper __dirname equivalent for ES modules
+// Set up __dirname for ES modules
 const __filename = fileURLToPath(
     import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,40 +16,47 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(cors());
+// In server.js
+app.use(cors({
+    origin: ['http://localhost:5173', 'https://personal-finanace-visualization.vercel.app/'],
+    credentials: true
+}));
+
 app.use(express.json());
 
-// Routes - with explicit router options
-app.use('/api/transactions', transactionRoutes);
-
-// MongoDB connection
+// Connect to MongoDB
 connectDB().catch((error) => {
     console.error("MongoDB connection error:", error);
 });
 
-// Serve static files in production
-if (process.env.NODE_ENV === "production") {
-    // Ensure static assets are served correctly
-    app.use(express.static(path.join(__dirname, "../client/dist")));
+// API Routes
+app.use('/api/transactions', transactionRoutes);
 
-    // Send index.html for any unknown routes in production
-    app.get("/*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"));
+// Test route to check dynamic parameters
+app.get('/test/:id', (req, res) => {
+    const { id } = req.params;
+    res.send(`Test route hit with ID: ${id}`);
+});
+
+// Serve static files if in production
+if (process.env.NODE_ENV === "production") {
+    const clientBuildPath = path.join(__dirname, "../client/dist");
+
+    app.use(express.static(clientBuildPath));
+
+    // Fallback to React for all frontend routes
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(clientBuildPath, "index.html"));
     });
 }
 
-// Error handling middleware (general errors)
+// Global Error Handler
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({ error: 'Server error', details: err.message });
 });
 
-// 404 handler for unknown routes
-app.use((req, res) => {
-    res.status(404).json({ error: 'Route not found' });
-});
-
-// Start the server
+// Start server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -13,16 +13,19 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/transactions`);
-        setTransactions(res.data);
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+   const fetchTransactions = async () => {
+  try {
+    // For debugging purposes
+    console.log("Fetching from hardcoded URL");
+    const res = await axios.get("http://localhost:5001/api/transactions");
+    console.log("Response:", res.data);
+    setTransactions(res.data);
+  } catch (error) {
+    console.error('Error fetching transactions:', error.response ? error.response.data : error.message);
+  } finally {
+    setLoading(false);
+  }
+};
     fetchTransactions();
   }, []);
 
