@@ -1,6 +1,6 @@
-import express from './node_modules/express/index.js';
-import cors from './node_modules/cors/index.js';
-import dotenv from './node_modules/dotenv/index.js'
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import transactionRoutes from './routes/transactionRoutes.js';
@@ -16,10 +16,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middleware
-// In server.js
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://personal-finanace-visualization.vercel.app/'],
-    credentials: true
+    origin: ['http://localhost:5173',
+        'https://personal-finanace-visualization.vercel.app'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
@@ -41,14 +44,14 @@ app.get('/test/:id', (req, res) => {
 // Serve static files if in production
 if (process.env.NODE_ENV === "production") {
     const clientBuildPath = path.join(__dirname, "../client/dist");
-
     app.use(express.static(clientBuildPath));
 
-    // Fallback to React for all frontend routes
-    app.get("*", (req, res) => {
+    // 👇 Exclude API routes from being caught by this wildcard
+    app.get(/^\/(?!api).*/, (req, res) => {
         res.sendFile(path.resolve(clientBuildPath, "index.html"));
     });
 }
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {
