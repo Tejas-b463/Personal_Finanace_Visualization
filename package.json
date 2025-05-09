@@ -2,8 +2,8 @@
     "name": "personal_finance",
     "version": "1.0.0",
     "scripts": {
-        "build": "cd server && npm install",
-        "start": "cd server && NODE_PATH=node_modules node src/index.js"
+        "build": "npm install --prefix server && npm install --prefix client &&  npm run build --prefix client",
+        "start": "npm run start --prefix server"
     },
     "type": "module"
 }
